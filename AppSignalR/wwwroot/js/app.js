@@ -1,24 +1,43 @@
+const btnIncrease = document.getElementById('increase');
+var counter = document.getElementById("viewCounter");
 
 // create connection
-var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/hubs/view")
-    .build();
+let connection = new signalR.HubConnectionBuilder()
+  // .configureLogging(signalR.LogLevel.Trace)
+  .configureLogging(new CustomerLogger())
+  .withUrl("/hubs/view", {
+    transport:
+      signalR.HttpTransportType.WebSockets |
+      signalR.HttpTransportType.ServerSentEvents,
+  })
+  .build();
 // on view update message from client
-connection.on("viewCountUpdate", function (value) {
-    var counter = document.getElementById("viewCounter");
-    counter.innerText = value.toString();
+// connection.on("viewCountUpdate", (value) => {
+//   var counter = document.getElementById("viewCounter");
+//   counter.innerText = value.toString();
+// });
+
+btnIncrease.addEventListener('click', () => {
+    connection.invoke("IncrementServerView");
 });
+
+connection.on("incrementView", (value) => {
+  counter.innerText = value.toString();
+
+  if (value % 10 === 0)
+        connection.off("incrementView");
+});
+
 // notify server we're watching
 function notify() {
-    connection.send("notifyWatching");
+  connection.send("notifyWatching");
 }
 // start connection
 function startSuccess() {
-    console.log("Connected.");
-    notify();
+  console.log("Connected.");
+  //notify();
 }
 function startFail() {
-    console.log("Connection Failed");
+  console.log("Connection Failed");
 }
 connection.start().then(startSuccess, startFail);
-//# sourceMappingURL=app.js.map

@@ -9,4 +9,10 @@ public class ViewHub : Hub{
         // notify EVERYONE about new view count
         await Clients.All.SendAsync("viewCountUpdate", ViewCount);
     }
+
+    public Task IncrementServerView(){
+        ViewCount++;
+
+        return Clients.All.SendAsync("incrementView", ViewCount);
+    }
 }
