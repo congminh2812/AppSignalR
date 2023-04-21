@@ -1,14 +1,14 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.ConfigureLogging((logging) =>{
-        logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Trace);
-        logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Trace);
-    });
+// builder.Host.ConfigureLogging((logging) =>{
+//         logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Trace);
+//         logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Trace);
+//     });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<IVoteManager, VoteManager>();
+// builder.Services.AddSingleton<IVoteManager, VoteManager>();
 
 var app = builder.Build();
 
@@ -28,10 +28,10 @@ app.UseRouting();
 app.UseAuthorization();
 
 
-// app.MapHub<ViewHub>("/hubs/view");
+ app.MapHub<ViewHub>("/hubs/view");
 // app.MapHub<StringHub>("/hubs/string");
 // app.MapHub<ColorHub>("/hubs/color");
-app.MapHub<VoteHub>("/hubs/vote");
+//app.MapHub<VoteHub>("/hubs/vote");
 
 app.MapControllerRoute(
     name: "default",
